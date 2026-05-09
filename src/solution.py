@@ -14,7 +14,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
-        logging.FileHandler("execution.log", mode='w'),
+        logging.FileHandler("logs/execution.log", mode='w'),
         logging.StreamHandler()
     ]
 )
@@ -111,7 +111,7 @@ def run_parallel():
     DECISÃO TÉCNICA: Uso de imap_unordered para permitir o streaming de chunks
     do disco direto para os workers sem carregar todos os chunks em memória antes.
     """
-    num_workers = cpu_count()
+    num_workers = 20
     logger.info(f"Iniciando Parte B — versão paralela | Workers: {num_workers} | Chunk: {CHUNK_SIZE}")
     start_time = time.time()
     
@@ -162,4 +162,7 @@ if __name__ == "__main__":
     
     speedup = t_seq / t_par
     logger.info(f"Speedup Resultante: {speedup:.2f}x")
-    logger.info("ANÁLISE FINAL: O speedup < 1x indica um cenário I/O Bound.")
+    if speedup < 1.5:
+        logger.info("ANÁLISE FINAL: O speedup modesto indica um cenário predominantemente I/O Bound.")
+    else:
+        logger.info("ANÁLISE FINAL: O speedup indica ganho de desempenho efetivo com paralelismo.")
